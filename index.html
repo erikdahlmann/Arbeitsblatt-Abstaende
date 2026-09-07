@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arbeitsblatt Abstände · Talbrücke</title>
+<!-- KaTeX liegt lokal im Ordner vendor/, damit der Ausdruck auch ohne Internet stimmt -->
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<script defer src="vendor/katex/katex.min.js"></script>
+<script defer src="vendor/katex/contrib/auto-render.min.js"></script>
+<style>
+  :root{--ink:#22201c;--muted:#6b665d;--line:#d8d2c4;--accent:#3a5a78;--paper:#faf8f3;--amber:#c9821a;--ok:#2e8b57}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e5db;color:var(--ink);
+       font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:11.5pt;line-height:1.55}
+  .ui{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .bar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;
+       display:flex;gap:10px;align-items:center;font-family:-apple-system,sans-serif;font-size:.85rem;z-index:5}
+  .bar button{font:inherit;padding:7px 13px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  .bar button:hover{border-color:var(--accent);background:#eef3f7}
+  .bar span{color:var(--muted)}
+  #warn{display:none;background:#fdeeec;border-bottom:1px solid #f0c8c2;padding:9px 16px;
+        font-family:-apple-system,sans-serif;font-size:.84rem;color:#8c2d22}
+  .blatt{background:#fff;width:21cm;min-height:29.7cm;margin:18px auto;padding:1.5cm 1.7cm;
+         box-shadow:0 2px 14px rgba(0,0,0,.10)}
+  h1{font-size:1.24rem;margin:0 0 2px}
+  .kopf{display:flex;justify-content:space-between;align-items:baseline;
+        border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+  .kopf .meta{font-family:-apple-system,sans-serif;font-size:.78rem;color:var(--muted);text-align:right}
+  h2{font-family:-apple-system,sans-serif;font-size:.76rem;text-transform:uppercase;letter-spacing:1px;
+     color:var(--muted);margin:20px 0 8px;font-weight:600}
+  .geg{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 16px;margin:10px 0}
+  .geg table{border-collapse:collapse;width:100%}
+  .geg td{padding:7px 6px;vertical-align:middle;border-bottom:1px solid #efeade}
+  .geg tr:last-child td{border-bottom:none}
+  .geg td:first-child{white-space:nowrap;color:var(--muted);
+       font-family:-apple-system,sans-serif;font-size:.82rem;width:34%}
+  .auf{margin:15px 0 0}
+  .auf .nr{font-weight:700;color:var(--accent)}
+  .platz{border-bottom:1px dotted var(--line);height:1.45cm}
+  .hinweis{border-left:3px solid var(--amber);background:#fdf6e8;padding:10px 14px;border-radius:0 8px 8px 0;
+           font-size:.95em;margin:16px 0}
+  /* Nur die Schrägbild-Grafik, NICHT die winzigen SVGs, die KaTeX für Klammern
+     und Vektorpfeile erzeugt – eine ungezielte svg-Regel zerstört den Formelsatz. */
+  svg.figur{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:8px;margin:6px 0}
+  .schritt{margin:8px 0 16px;padding-left:14px;border-left:2px solid var(--line)}
+  .schritt p{margin:6px 0}
+  .verf{font-family:-apple-system,sans-serif;font-size:.78rem;color:var(--accent);
+        text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:2px}
+  .fuss{margin-top:20px;border-top:1px solid var(--line);padding-top:8px;
+        font-family:-apple-system,sans-serif;font-size:.72rem;color:var(--muted)}
+  .katex{font-size:1.04em}
+  .katex-display{margin:.5em 0}
+  @media print{
+    body{background:#fff} .bar,#warn{display:none}
+    .blatt{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;page-break-after:always}
+    .blatt:last-child{page-break-after:auto}
+    body.nurAufgabe .loesungsblatt{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="bar ui">
+  <button onclick="window.print()">Drucken</button>
+  <button onclick="document.body.classList.toggle('nurAufgabe');this.textContent=document.body.classList.contains('nurAufgabe')?'Lösungen wieder einblenden':'Nur Aufgabenblatt drucken'">Nur Aufgabenblatt drucken</button>
+  <span>Zwei Seiten: Aufgabenblatt für den Kurs, Lösungsblatt für die Lehrkraft.</span>
+</div>
+<div id="warn" class="ui">Der Formelsatz konnte nicht geladen werden. Liegt der Ordner <code>vendor/</code> noch neben dieser Datei?</div>
+
+<div class="blatt">
+  <div class="kopf">
+    <div><h1>Abstände im Sachzusammenhang</h1>
+      <div class="ui" style="font-size:.8rem;color:var(--muted)">Vier Fragen, vier Verfahren</div></div>
+    <div class="meta">Mathematik LK · Q2.1</div>
+  </div>
+
+  <p>An einer Talbrücke wird die Unterseite der Brückenplatte von Drohnen kontrolliert. Alle Angaben in
+  einem Koordinatensystem, dessen Einheit <b>10 Meter</b> entspricht; \(x_3\) ist die Höhe.</p>
+
+  <div class="geg"><table>
+    <tr><td>Brückenplatte</td><td>\(E:\ x_1 + 2x_2 + 2x_3 = 32\)</td></tr>
+    <tr><td>Spitze des Baugerüsts</td><td>\(M(4 \mid 0 \mid 5)\)</td></tr>
+    <tr><td>Bahn der Kontrolldrohne</td><td>\(g:\ \vec{x} = \begin{pmatrix}1\\0\\2\end{pmatrix} + r\cdot\begin{pmatrix}2\\2\\1\end{pmatrix}\)</td></tr>
+    <tr><td>Ersatzbahn</td><td>\(h_1:\ \vec{x} = \begin{pmatrix}2\\6\\0\end{pmatrix} + s\cdot\begin{pmatrix}4\\4\\2\end{pmatrix}\)</td></tr>
+    <tr><td>Bahn der zweiten Drohne</td><td>\(h_2:\ \vec{x} = \begin{pmatrix}0\\8\\6\end{pmatrix} + s\cdot\begin{pmatrix}1\\-2\\2\end{pmatrix}\)</td></tr>
+  </table></div>
+
+  <svg class="figur" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 600" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">
+<defs><marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6b665d"/></marker></defs>
+<rect width="780" height="600" fill="#faf8f3"/>
+<polygon points="273.0,87.9 452.3,267.2 247.9,352.1 68.6,172.8" fill="#3a5a78" opacity="0.14" stroke="#3a5a78" stroke-width="1.6"/>
+<text x="368.7" y="181.5" font-size="17" fill="#3a5a78" font-weight="700">E</text>
+<text x="384.7" y="181.5" font-size="12.5" fill="#3a5a78">Brückenplatte</text>
+<line x1="153.5" y1="446.5" x2="542.0" y2="446.5" stroke="#6b665d" stroke-width="1.5" marker-end="url(#ax)"/>
+<text x="550.0" y="450.5" font-size="13" fill="#6b665d">x₂</text>
+<line x1="153.5" y1="446.5" x2="153.5" y2="58.0" stroke="#6b665d" stroke-width="1.5" marker-end="url(#ax)"/>
+<text x="151.5" y="50.0" font-size="13" fill="#6b665d">x₃</text>
+<line x1="153.5" y1="446.5" x2="58.0" y2="542.0" stroke="#6b665d" stroke-width="1.5" marker-end="url(#ax)"/>
+<text x="42.0" y="556.0" font-size="13" fill="#6b665d">x₁</text>
+<line x1="142.9" y1="397.4" x2="258.5" y2="371.4" stroke="#22201c" stroke-width="2.6"/>
+<text x="267.5" y="376.4" font-size="16" fill="#22201c" font-weight="700">g</text>
+<line x1="311.6" y1="467.7" x2="427.2" y2="441.7" stroke="#22201c" stroke-width="2.2" stroke-dasharray="9 5"/>
+<text x="436.2" y="446.7" font-size="16" fill="#22201c" font-weight="700">h₁</text>
+<line x1="463.0" y1="316.4" x2="181.4" y2="119.7" stroke="#c9821a" stroke-width="2.6"/>
+<text x="472.0" y="321.4" font-size="16" fill="#c9821a" font-weight="700">h₂</text>
+<circle cx="111.0" cy="339.5" r="5.5" fill="#2e8b57"/>
+<text x="121.0" y="335.5" font-size="15" fill="#2e8b57" font-weight="700">M</text>
+<text x="137.0" y="335.5" font-size="12.5" fill="#2e8b57">Gerüstspitze</text>
+<text x="20" y="26" font-size="12.5" fill="#6b665d">Schrägbild · 1 Einheit = 10 m · zur Orientierung, nicht zum Ablesen</text>
+</svg>
+
+  <h2>Aufgaben</h2>
+
+  <div class="auf"><span class="nr">a)</span> Bestimme den Abstand der Gerüstspitze \(M\) von der
+    Brückenplatte \(E\) und gib den Lotfußpunkt an.
+    <div class="platz"></div><div class="platz"></div></div>
+
+  <div class="auf"><span class="nr">b)</span> Wie nah kommt die Kontrolldrohne auf ihrer Bahn \(g\) der
+    Gerüstspitze \(M\)? Bestimme auch die Stelle, an der das geschieht.
+    <div class="platz"></div><div class="platz"></div></div>
+
+  <div class="auf"><span class="nr">c)</span> Zeige zuerst, dass \(h_1\) und \(g\) parallel sind. Prüfe
+    dann mit einer Punktprobe, ob es wirklich <b>zwei verschiedene</b> Bahnen sind oder ob \(h_1\)
+    dieselbe Gerade beschreibt wie \(g\). Berechne erst danach den Abstand der beiden Bahnen.
+    <div class="platz"></div><div class="platz"></div></div>
+
+  <div class="auf"><span class="nr">d)</span> Die zweite Drohne fliegt auf \(h_2\). Wie nah kommen sich
+    die beiden Drohnen, und <b>an welchen Stellen</b> geschieht das? Begründe, warum für die zweite
+    Frage nicht jedes Verfahren taugt.
+    <div class="platz"></div><div class="platz"></div><div class="platz"></div></div>
+
+  <div class="hinweis"><b>Vor dem Rechnen:</b> Schreib zu jeder Teilaufgabe zuerst an den Rand,
+  <i>welches Verfahren</i> du wählst und warum. Jede Antwort braucht am Ende einen Satz mit Einheit –
+  eine Einheit sind 10 Meter.</div>
+
+  <div class="fuss">Mathematik LK · Abstände · alle Ergebnisse sind ganzzahlig, das ist deine erste Kontrolle.</div>
+</div>
+
+<div class="blatt loesungsblatt">
+  <div class="kopf">
+    <div><h1>Lösungen · Abstände im Sachzusammenhang</h1>
+      <div class="ui" style="font-size:.8rem;color:var(--muted)">Lehrkraft-Exemplar</div></div>
+    <div class="meta">Mathematik LK · Q2.1</div>
+  </div>
+
+  <h2>a) Punkt – Ebene</h2>
+  <div class="verf">Hesse'sche Normalenform · für den Fußpunkt zusätzlich die Lotgerade</div>
+  <div class="schritt">
+    <p>$$\vec{n} = \begin{pmatrix}1\\2\\2\end{pmatrix},\qquad |\vec{n}| = \sqrt{1+4+4} = 3,\qquad \vec{n}\circ\vec{m} = 4+0+10 = 14$$</p>
+    <p>$$d(M;E) = \frac{|\,\vec{n}\circ\vec{m} - 32\,|}{|\vec{n}|} = \frac{|14-32|}{3} = \frac{18}{3} = \boxed{6} \quad\text{, also } 60\ \text{m}$$</p>
+    <p>Lotgerade durch \(M\) in Richtung \(\vec{n}\), eingesetzt in \(E\):</p>
+    <p>$$(4+t) + 2(0+2t) + 2(5+2t) = 14 + 9t = 32 \;\Longrightarrow\; t = 2$$</p>
+    <p>$$\vec{f} = \begin{pmatrix}4\\0\\5\end{pmatrix} + 2\cdot \begin{pmatrix}1\\2\\2\end{pmatrix} = \boxed{\begin{pmatrix}6\\4\\9\end{pmatrix}} \qquad \text{Probe: } 6+8+18 = 32\ \checkmark$$</p>
+  </div>
+
+  <h2>b) Punkt – Gerade</h2>
+  <div class="verf">Hilfsebene senkrecht zu \(g\) durch \(M\)</div>
+  <div class="schritt">
+    <p>Normalenvektor der Hilfsebene ist der <i>Richtungsvektor von \(g\)</i>, also \(\vec{u} = \begin{pmatrix}2\\2\\1\end{pmatrix}\):</p>
+    <p>$$E_H:\ 2x_1 + 2x_2 + x_3 = 2\cdot 4 + 2\cdot 0 + 5 = 13$$</p>
+    <p>\(g\) einsetzen:</p>
+    <p>$$2(1+2r) + 2(2r) + (2+r) = 4 + 9r = 13 \;\Longrightarrow\; r = 1$$</p>
+    <p>$$\vec{f} = \begin{pmatrix}1\\0\\2\end{pmatrix} + 1\cdot \begin{pmatrix}2\\2\\1\end{pmatrix} = \boxed{\begin{pmatrix}3\\2\\3\end{pmatrix}},\qquad
+         \overrightarrow{MF} = \begin{pmatrix}-1\\2\\-2\end{pmatrix},\qquad d = \sqrt{1+4+4} = \boxed{3}\quad\text{, also } 30\ \text{m}$$</p>
+    <p><i>Kontrolle mit der Flächenformel:</i></p>
+    <p>$$\overrightarrow{AM}\times\vec{u} = \begin{pmatrix}3\\0\\3\end{pmatrix}\times\begin{pmatrix}2\\2\\1\end{pmatrix} = \begin{pmatrix}-6\\3\\6\end{pmatrix},\qquad
+         d = \frac{\left|\overrightarrow{AM}\times\vec{u}\right|}{|\vec{u}|} = \frac{9}{3} = 3\ \checkmark$$</p>
+  </div>
+
+  <h2>c) Parallele Geraden</h2>
+  <div class="verf">Kollinearität · Punktprobe · dann Abstand eines Punktes von der anderen Geraden</div>
+  <div class="schritt">
+    <p><b>1. Parallel?</b> Die Richtungsvektoren sind kollinear:</p>
+    <p>$$\begin{pmatrix}4\\4\\2\end{pmatrix} = 2\cdot \begin{pmatrix}2\\2\\1\end{pmatrix}$$</p>
+    <p>Damit sind die Bahnen parallel <i>oder</i> identisch – das entscheidet erst der nächste Schritt.</p>
+    <p><b>2. Verschieden?</b> Punktprobe: Liegt der Aufpunkt \(B_1(2 \mid 6 \mid 0)\) von \(h_1\) auf \(g\)?</p>
+    <p>$$\text{I: } 2 = 1 + 2r \Rightarrow r = 0{,}5 \qquad
+         \text{II: } 6 = 0 + 2r \Rightarrow r = 3$$</p>
+    <p>Widerspruch \(\Rightarrow\) \(B_1\) liegt nicht auf \(g\) \(\Rightarrow\) die Bahnen sind
+       <b>echt parallel</b>, also zwei verschiedene Geraden.</p>
+    <p><b>3. Abstand</b> von \(B_1\) zu \(g\):</p>
+    <p>$$\overrightarrow{AB_1} = \begin{pmatrix}1\\6\\-2\end{pmatrix},\qquad \overrightarrow{AB_1}\times\vec{u} = \begin{pmatrix}10\\-5\\-10\end{pmatrix},\qquad
+         d = \frac{15}{3} = \boxed{5}\quad\text{, also } 50\ \text{m}$$</p>
+  </div>
+
+  <h2>d) Windschiefe Geraden</h2>
+  <div class="verf">Spatprodukt für die Zahl · geschlossener Vektorzug für die Orte</div>
+  <div class="schritt">
+    <p>$$\vec{u}\times\vec{v} = \begin{pmatrix}2\\2\\1\end{pmatrix}\times\begin{pmatrix}1\\-2\\2\end{pmatrix} = \begin{pmatrix}6\\-3\\-6\end{pmatrix},\qquad |\vec{u}\times\vec{v}| = 9$$</p>
+    <p>$$\overrightarrow{AB_2} = \begin{pmatrix}-1\\8\\4\end{pmatrix},\qquad
+         \overrightarrow{AB_2}\circ(\vec{u}\times\vec{v}) = -6-24-24 = -54 \neq 0$$</p>
+    <p>Das Spatprodukt ist nicht null, die Geraden sind also wirklich windschief.</p>
+    <p>$$d = \frac{\left|\overrightarrow{AB_2}\circ(\vec{u}\times\vec{v})\right|}{|\vec{u}\times\vec{v}|}
+         = \frac{54}{9} = \boxed{6}\quad\text{, also } 60\ \text{m}$$</p>
+    <p><b>Die Orte</b> liefert das Spatprodukt <i>nicht</i>. Ansatz über den geschlossenen Vektorzug:
+       der Verbindungsvektor</p>
+    <p>$$\vec{w} = \overrightarrow{AB_2} + s\,\vec{v} - r\,\vec{u}$$</p>
+    <p>soll auf beiden Bahnen senkrecht stehen, also \(\vec{w}\circ\vec{u} = 0\) <i>und</i>
+       \(\vec{w}\circ\vec{v} = 0\). Hier ist</p>
+    <p>$$\vec{u}\circ\vec{v} = 2 - 4 + 2 = 0,$$</p>
+    <p>die Richtungsvektoren stehen selbst senkrecht aufeinander. Dadurch zerfällt das
+       Gleichungssystem in zwei einzelne Gleichungen:</p>
+    <p>$$\vec{w}\circ\vec{u} = 18 - 9r = 0 \;\Longrightarrow\; \boxed{r = 2} \qquad
+         \vec{w}\circ\vec{v} = -9 + 9s = 0 \;\Longrightarrow\; \boxed{s = 1}$$</p>
+    <p>$$\vec{f_g} = \begin{pmatrix}1\\0\\2\end{pmatrix} + 2\cdot \begin{pmatrix}2\\2\\1\end{pmatrix} = \boxed{\begin{pmatrix}5\\4\\4\end{pmatrix}},\qquad
+         \vec{f_h} = \begin{pmatrix}0\\8\\6\end{pmatrix} + 1\cdot \begin{pmatrix}1\\-2\\2\end{pmatrix} = \boxed{\begin{pmatrix}1\\6\\8\end{pmatrix}}$$</p>
+    <p>Kontrolle:</p>
+    <p>$$\overrightarrow{F_gF_h} = \begin{pmatrix}-4\\2\\4\end{pmatrix},\qquad \left|\overrightarrow{F_gF_h}\right| = \sqrt{16+4+16} = 6\ \checkmark$$</p>
+  </div>
+
+  <div class="hinweis"><b>Der Kern der Aufgabe.</b> In d) ist zweimal gefragt: <i>wie weit</i> und
+  <i>wo</i>. Das Spatprodukt beantwortet nur die erste Frage, in zwei Zeilen. Für die zweite führt nur
+  der Vektorzug zum Ziel. Genau diese Unterscheidung steht in der Verfahrenstabelle aus Stunde 2.</div>
+
+  <div class="fuss">Alle Ergebnisse ganzzahlig: 6 · 3 · 5 · 6 Einheiten, also 60 m · 30 m · 50 m · 60 m.</div>
+</div>
+
+<script>
+window.addEventListener("DOMContentLoaded", function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false}],
+      throwOnError:false
+    });
+  } else {
+    document.getElementById("warn").style.display = "block";
+  }
+});
+</script>
+</body>
+</html>
